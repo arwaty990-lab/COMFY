@@ -1,0 +1,409 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout | comfy.</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --cream: #f8f5ef;
+    --beige: #e9dfd1;
+    --brown: #6c5544;
+    --dark: #302921;
+    --white: #fffdf9;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--cream);
+    color: var(--dark);
+    font-family: "DM Sans", sans-serif;
+    padding: 28px 16px 50px;
+}
+
+.top {
+    max-width: 760px;
+    margin: 0 auto 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.logo {
+    font-family: "Playfair Display", serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.back {
+    border: 1px solid #d9cbb9;
+    background: transparent;
+    padding: 10px 13px;
+    color: var(--dark);
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+}
+
+.wrap {
+    max-width: 760px;
+    margin: auto;
+    background: var(--white);
+    padding: clamp(22px, 5vw, 48px);
+    border: 1px solid #eee5d9;
+}
+
+.eyebrow {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--brown);
+    margin-bottom: 12px;
+}
+
+h1 {
+    font-family: "Playfair Display", serif;
+    font-weight: 400;
+    font-size: clamp(32px, 6vw, 46px);
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #786d62;
+    margin-bottom: 30px;
+}
+
+h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 23px;
+    font-weight: 400;
+    margin: 28px 0 16px;
+}
+
+.field { margin-bottom: 18px; }
+
+label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+input, textarea {
+    width: 100%;
+    border: 1px solid #d9cbb9;
+    background: var(--white);
+    padding: 13px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--dark);
+    outline: none;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--brown);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 85px;
+}
+
+.summary {
+    background: #f3eee6;
+    padding: 18px;
+    margin: 20px 0 24px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 7px 0;
+    border-bottom: 1px solid #e2d8cb;
+}
+
+.summary-row:last-of-type { border-bottom: 0; }
+
+.total {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    font-weight: 700;
+    padding-top: 14px;
+    margin-top: 8px;
+    border-top: 1px solid #cfc1b0;
+}
+
+.place {
+    width: 100%;
+    border: 1px solid var(--dark);
+    background: var(--dark);
+    color: white;
+    padding: 16px;
+    letter-spacing: 1.5px;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.place:hover { background: var(--brown); }
+
+.place:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.note {
+    font-size: 11px;
+    line-height: 1.7;
+    color: #786d62;
+    text-align: center;
+    margin-top: 14px;
+}
+
+.success {
+    display: none;
+    background: #eee7dc;
+    padding: 24px;
+    margin-top: 20px;
+    text-align: center;
+    line-height: 1.8;
+}
+
+.success h2 { margin-top: 0; }
+
+@media (max-width: 480px) {
+    .top { align-items: flex-start; }
+    .logo { font-size: 28px; }
+    .back { font-size: 10px; }
+    .wrap { padding: 22px 17px; }
+}
+</style>
+</head>
+
+<body>
+
+<header class="top">
+    <a class="logo" href="index.html">comfy.</a>
+    <button class="back" type="button" id="backButton">
+        ← BACK TO SHOP
+    </button>
+</header>
+
+<main class="wrap">
+    <p class="eyebrow">COMFY / YOUR ORDER</p>
+    <h1>Complete Your Order</h1>
+    <p class="subtitle">
+        Almost yours. Please enter your delivery details below.
+    </p>
+
+    <h2>Your order</h2>
+    <div class="summary" id="orderSummary" aria-live="polite"></div>
+
+    <h2>Delivery details</h2>
+
+    <form id="checkoutForm">
+        <div class="field">
+            <label for="customerName">Full Name *</label>
+            <input id="customerName" name="customerName"
+                   type="text" placeholder="Enter your full name"
+                   autocomplete="name" required>
+        </div>
+
+        <div class="field">
+            <label for="customerPhone">Phone Number *</label>
+            <input id="customerPhone" name="customerPhone"
+                   type="tel" placeholder="01xxxxxxxxx"
+                   autocomplete="tel" inputmode="tel"
+                   pattern="[0-9+() -]{8,20}"
+                   title="Please enter a valid phone number." required>
+        </div>
+
+        <div class="field">
+            <label for="customerCity">City / Area *</label>
+            <input id="customerCity" name="customerCity"
+                   type="text" placeholder="Enter your city or area"
+                   autocomplete="address-level2" required>
+        </div>
+
+        <div class="field">
+            <label for="customerAddress">Full Address *</label>
+            <textarea id="customerAddress" name="customerAddress"
+                      placeholder="Street, building, floor, apartment..."
+                      autocomplete="street-address" required></textarea>
+        </div>
+
+        <div class="field">
+            <label for="customerNotes">Additional Notes (Optional)</label>
+            <textarea id="customerNotes" name="customerNotes"
+                      placeholder="Delivery instructions, size, or other notes..."></textarea>
+        </div>
+
+        <button class="place" id="sendOrderButton" type="submit">
+            SEND ORDER VIA WHATSAPP
+        </button>
+
+        <p class="note">
+            Your order details will open in WhatsApp so you can send them to comfy.
+        </p>
+    </form>
+
+    <section class="success" id="successMessage" aria-live="polite">
+        <h2>Order message prepared</h2>
+        <p>
+            WhatsApp should open with your order details.
+            Please send the message to complete your order.
+        </p>
+    </section>
+</main>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+let cart = [];
+
+try {
+    const parsed = JSON.parse(params.get("items") || "[]");
+
+    if (Array.isArray(parsed)) {
+        cart = parsed
+            .filter(item =>
+                item &&
+                typeof item.name === "string" &&
+                Number.isFinite(Number(item.price)) &&
+                Number(item.price) >= 0 &&
+                Number.isFinite(Number(item.quantity)) &&
+                Number(item.quantity) > 0
+            )
+            .map(item => ({
+                name: item.name,
+                price: Number(item.price),
+                quantity: Math.floor(Number(item.quantity))
+            }));
+    }
+} catch (error) {
+    cart = [];
+}
+
+const money = amount =>
+    "EGP " + amount.toLocaleString("en-EG");
+
+const summary = document.getElementById("orderSummary");
+const sendButton = document.getElementById("sendOrderButton");
+
+let total = 0;
+
+/* DISPLAY ORDER SUMMARY */
+if (cart.length === 0) {
+    summary.textContent =
+        "Your bag is empty. Please return to the shop and add a product.";
+
+    sendButton.disabled = true;
+} else {
+    cart.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "summary-row";
+
+        const name = document.createElement("span");
+        name.textContent = item.name + " × " + item.quantity;
+
+        const price = document.createElement("span");
+        price.textContent = money(item.price * item.quantity);
+
+        row.append(name, price);
+        summary.appendChild(row);
+
+        total += item.price * item.quantity;
+    });
+
+    const totalRow = document.createElement("div");
+    totalRow.className = "total";
+
+    const totalLabel = document.createElement("span");
+    totalLabel.textContent = "TOTAL";
+
+    const totalValue = document.createElement("span");
+    totalValue.textContent = money(total);
+
+    totalRow.append(totalLabel, totalValue);
+    summary.appendChild(totalRow);
+}
+
+/* BACK TO SHOP */
+document.getElementById("backButton").addEventListener("click", () => {
+    window.location.href = "index.html";
+});
+
+/* SEND ORDER TO WHATSAPP */
+document.getElementById("checkoutForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    if (cart.length === 0 || !event.currentTarget.reportValidity()) {
+        return;
+    }
+
+    const name = document.getElementById("customerName").value.trim();
+    const phone = document.getElementById("customerPhone").value.trim();
+    const city = document.getElementById("customerCity").value.trim();
+    const address = document.getElementById("customerAddress").value.trim();
+    const notes = document.getElementById("customerNotes").value.trim();
+
+    if (!/^[0-9+() -]{8,20}$/.test(phone)) {
+        alert("Please enter a valid phone number.");
+        return;
+    }
+
+    const reference = "COMFY-" + Date.now().toString().slice(-8);
+
+    const orderLines = cart.map(item =>
+        "- " + item.name + " x " + item.quantity +
+        " = " + money(item.price * item.quantity)
+    );
+
+    const message = [
+        "NEW COMFY ORDER",
+        "",
+        "Order Reference: " + reference,
+        "",
+        "CUSTOMER DETAILS",
+        "Name: " + name,
+        "Phone: " + phone,
+        "City / Area: " + city,
+        "Address: " + address,
+        "Notes: " + (notes || "None"),
+        "",
+        "ORDER DETAILS",
+        ...orderLines,
+        "",
+        "TOTAL: " + money(total)
+    ].join("\n");
+
+    document.getElementById("successMessage").style.display = "block";
+
+    const whatsappURL =
+        "https://wa.me/201018110501?text=" +
+        encodeURIComponent(message);
+
+    window.open(whatsappURL, "_blank");
+});
+</script>
+
+</body>
+</html>
